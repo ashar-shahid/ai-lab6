@@ -1,0 +1,46 @@
+#2022f-bse-104
+
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+# Step 1: Load dataset (use read_excel instead of read_csv for Excel files)
+df = pd.read_excel('Book1.xlsx')
+
+# Step 2: Visualize the data
+plt.xlabel('Area (sqft)')
+plt.ylabel('Price ($)')
+plt.scatter(df['area'], df['price'], color='red', marker='+')
+plt.show()
+
+# Step 3: Prepare data for model
+X = df['area'].values.reshape(-1, 1)  # Reshaping to 2D array for scikit-learn
+y = df['price']
+
+# Step 4: Create and fit the Linear Regression model
+model = LinearRegression()
+model.fit(X, y)
+
+# Print model coefficients
+print(f"Slope (m): {model.coef_[0]}")
+print(f"Intercept (b): {model.intercept_}")
+
+# Step 5: Predict price for area = 3300 sqft
+predicted_price = model.predict([[3300]])
+print(f"Predicted price for 3300 sqft: ${predicted_price[0]:,.2f}")
+
+# Step 6: Visualize the regression line
+plt.scatter(df['area'], df['price'], color='red', marker='+')  # Data points
+plt.plot(df['area'], model.predict(X), color='blue')  # Regression line
+plt.xlabel('Area (sqft)')
+plt.ylabel('Price ($)')
+plt.show()
+
+# Step 7: Predict price for new areas (5000, 8000, 9000 sqft)
+new_areas = np.array([5000, 8000, 9000]).reshape(-1, 1)
+predicted_prices = model.predict(new_areas)
+
+# Display predictions
+for area, price in zip(new_areas, predicted_prices):
+    print(f"Predicted price for {area[0]} sqft: ${price:,.2f}")
